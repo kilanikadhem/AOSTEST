@@ -1,0 +1,18 @@
+{
+    "title": "Users List",
+    "users": [
+      {
+        "id": "0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",
+        "email":"kadhem@gmail.com",
+        "password": "123456789", 
+        "status" : "Not connected"
+      },
+      {
+        "id": "abccdf63-e946-4e12-b201-8775e2dfc800",
+        "email":"kilani@gmail.com",
+        "password": "987654321",
+        "status" : "Not connected"
+      } 
+    
+    ]
+  }

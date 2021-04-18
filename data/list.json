@@ -1,0 +1,23 @@
+{
+    "title": "My ToDo List",
+    "items": [
+      {
+        "id": "0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",
+        "title":"Item 1",
+        "description": "This is the first item in your list",
+        "status" : "complétée", 
+        "userId" :"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",
+        "sharedUsers" : ["abccdf63-e946-4e12-b201-8775e2dfc800"]
+
+      },
+      {
+        "id": "ba33d5af-1d62-4147-99d3-269896a83bb9",
+        "title":"Item 2",
+        "description": "This is the second item in your list",
+        "status" : "Non complétée",
+        "userId" :"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",
+        "sharedUsers" : []
+
+      }
+    ]
+  }

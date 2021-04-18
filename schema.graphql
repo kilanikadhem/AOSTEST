@@ -1,0 +1,45 @@
+
+type List  {
+    id: String!
+    title: String!
+    items(title: String): [Item]
+  }
+
+  type Item {
+    id: String!
+    title: String!
+    description: String!
+    status : String!
+    userId: String!
+    sharedUsers: [String] 
+
+  }
+
+ type User {
+  id: String!
+  name: String!
+  lastName: String!
+  email: String!
+  password: String!
+  status : String!
+  }
+
+  type Query {
+    list: [Item]
+    users: [User]
+    getItemByUser(userId: String!): [Item]
+    getSharedItemByUser(userId: String!): [Item]
+  }
+  type Mutation {
+    createItem(title: String, description: String, status: String): Item
+    updateItem(id: String!, title: String, description: String): Item
+    deleteItem(id: String!,userId: String!): String 
+    createUser( id: String, name: String, lastName: String, email: String,password: String):User
+    updateUser(id: String!, title: String, description: String): Item
+    deleteUser(id: String!,userId: String!): String 
+    loginUser(login: String, password: String): Boolean
+    logoutUser(userId: String):Boolean
+    EndItem(id: String, status: String):Item
+    commentItem(id: String, status: String):Item
+    shareItem(id: String, userId: String):Item
+  }
