@@ -26,6 +26,7 @@ export const Userresolvers = {
         user.name = name
         user.lastName = lastName
         user.email = email
+        user.password = password
         return user
       }
       throw new Error('user not found');

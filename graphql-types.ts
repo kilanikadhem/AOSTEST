@@ -69,6 +69,7 @@ export type MutationCreateItemArgs = {
 export type MutationShareItem = {
   id : Maybe<Scalars['String']>; 
   userId :  Maybe<Scalars['String']>;
+  userToShare: Maybe<Scalars['String']>;
 }
 
 export type MutationUpdateItemArgs = {

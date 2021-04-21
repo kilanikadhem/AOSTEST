@@ -1,5 +1,5 @@
-const item = require('./Itemresolvers');
-const user = require('./UserResolver');
+const item = require('./itemresolver');
+const user = require('./userResolver');
 
 module.exports = {
   Query: {
@@ -22,9 +22,10 @@ module.exports = {
     //Item
     createItem:  item.Itemresolvers.createItem,
     updateItem : item.Itemresolvers.updateItem,
-    EndItem: item.Itemresolvers.completeItem,
+    completeItem: item.Itemresolvers.completeItem,
     deleteItem : item.Itemresolvers.deleteItem,
     shareItem: item.Itemresolvers.shareItem,
-    commentItem : item.Itemresolvers.commentItem
+    commentItem : item.Itemresolvers.commentItem,
+    
   }
 }
