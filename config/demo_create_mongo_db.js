@@ -1,12 +1,76 @@
-var MongoClient = require('mongodb').MongoClient
-var url = "mongodb://localhost:27017/mydb"
+const MongoClient = require('mongodb').MongoClient;
 
-MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-  console.log("Database created!");
-  db.close();
-}); 
-//dev complete task , 
-// share task 
-// verify when sharing is the user  
-//Mongo 
+// Connection URL
+const url = 'mongodb://localhost:27017';//mongodb://username:password@url:port/db_name?params
+
+// Database Name
+const dbName = 'AOSTEST';
+const client = new MongoClient(url);
+const DB = {};
+
+
+
+DB.insert = function insert(data, destination) {
+  const db = client.db(dbName);
+  const collection = db.collection(destination);
+  // Insert some documents
+  collection.insert(data, function (err, result) {
+    if (err) console.log("DB insert: error", err)
+    else console.log("DB insert: succesfully", result)
+  });
+};
+
+DB.delete = function (data, destination) {
+  const db = client.db(dbName);
+  const collection = db.collection(destination);
+  // Delete some documents
+  collection.deleteOne(data, function (err, result) {
+    if (err) console.log("DB delete: error", err)
+    else console.log("DB delete: succesfully", result)
+  });
+};
+
+DB.findDocuments = function (data, destination,cb) {
+  
+  const db = client.db(dbName);
+  const collection = db.collection(destination);
+  // Find all documents
+   return collection.find(data).toArray();
+};
+
+DB.findAll = function (destination) {
+ 
+    // Get the documents collection
+    const db = client.db(dbName);
+    const collection = db.collection(destination);
+    // Find some documents
+    return collection.find({}).toArray();
+  
+}
+DB.findDocument = async function findDocument(data, destination) {
+  const db = client.db(dbName);
+  const collection = db.collection(destination);
+  // find one document
+  return collection.findOne(data);
+};
+
+DB.updateDocument = async function updateDocument(id, data, destination,cb) {
+  const db = client.db(dbName);
+  const collection = db.collection(destination);
+  return collection.updateOne(id,data,destination);
+ };
+
+ DB.findOneAndUpdate = async function findOneAndUpdate(id, data, destination,cb) {
+  const db = client.db(dbName);
+  const collection = db.collection(destination);
+  return collection.findOneAndUpdate(id,data,destination);
+ };
+
+DB.connect = function connect(cb) {
+  DB.client = client.connect(function (err) {
+    if (err) console.log("DB:", err)
+    else console.log("DB: succesfully")
+  });
+}
+
+module.exports = DB;

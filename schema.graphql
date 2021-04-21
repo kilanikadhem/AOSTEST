@@ -16,12 +16,12 @@ type List  {
   }
 
  type User {
-  id: String!
+  _id: String!
   name: String!
   lastName: String!
   email: String!
   password: String!
-  status : String!
+  status : String
   }
 
   type Query {
@@ -37,8 +37,8 @@ type List  {
     createUser(name: String, lastName: String, email: String,password: String):User
     updateUser(id: String!, name: String, lastName: String, email: String, password: String): User
     deleteUser(id: String!): String 
-    loginUser(login: String, password: String): Boolean
-    logoutUser(userId: String):Boolean
+    loginUser(login: String, password: String): User
+    logoutUser(userId: String):User
     commentItem(id: String, description: String,userId:String):Item
     completeItem(id: String!, status: String!, userId: String!):Item
     shareItem(id: String, userToShare: String, userId: String):Item 

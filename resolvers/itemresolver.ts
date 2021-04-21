@@ -13,11 +13,12 @@ import {
   
   const todoList = require('../data/list.json')
   const user = require('./UserResolver');
+  var DB = require('../config/demo_create_mongo_db')
   export const Itemresolvers = {
-   
+      // mongo 
       list: () => todoList.items,
    
-   
+      // Mongo
       createItem(_, {title, description, status,userId}: MutationCreateItemArgs) {
         const item = {id: uuid.v1(), title, description, status, userId}
         var connected = user.Userresolvers.isConnected(userId);
@@ -25,6 +26,8 @@ import {
         todoList.items.push(item)
         return item
      },
+
+     // Mongo
       updateItem(_, {id, title = undefined, description, status =undefined, userId}: MutationUpdateItemArgs) {
         const item = todoList.items.find(i => i.id === id)
         var connected = user.Userresolvers.isConnected(userId);
@@ -55,12 +58,14 @@ import {
       },
 
       getItemByUser(_,{userId}:QueryGetItemByUser) {
-        const idx = todoList.items.filter(i => i.userId === userId)
-        if(idx.length !== 0) {
-         
-          return idx;
-        }
-        throw new Error(' Item with UserId not found');
+        return new Promise(async(resolve,reject)=>{
+           let isConnected=  user.Userresolvers.isConnected(userId);
+           if(isConnected){
+            const res = await DB.findDocuments({"userId":userId},"items");
+            console.log(res);
+            resolve(res);
+           }
+           });
       },
       getSharedItemByUser(_,{userId}:QueryGetItemByUser) {
         var sharedItems = [];

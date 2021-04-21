@@ -24,7 +24,6 @@ Vous pouvez installer facilement nodejs et npm avec apt install, exécutez simpl
 ---
 
 ## Install
-
     $ git clone https://github.com/kilanikadhem/AOSTEST
     $ npm  install 
 
@@ -33,11 +32,15 @@ packages a installer :
 -graphql 
 -@graphql-codegen/cli 
 -uuid 
+-mongoDb
 
 cli : npm install typescript graphql @graphql-codegen/cli uuid 
+      npm install mongodb --save 
 
 
 ## Structure  de l'application : 
+config: 
+  - fichier demo_create_mongo_db : contient la connexion avec la DB et les function d'interaction entre les controllers et la DB .
 Data : 
   -dossier qui contient les listes des valeurs des Models  User, Taches, List (des tableaux des objets Json).
 Resolvers: 
@@ -54,8 +57,6 @@ Resolvers:
                        commentItem(id,userId,description)
      *   UserResolver : fichier resolver  pour le Model User  : 
             Query : listUser
-                    
-
 
             Mutation: createUser(name, lastName, email, password)
                       updateUser(id,name, lastName, email, password)
