@@ -5,27 +5,27 @@ module.exports = {
   Query: {
     /*threads: threads.all,
     thread: threads.findOne,*/
-    users : user.Userresolvers.listUser,
-    getItemByUser: item.Itemresolvers.getItemByUser,
-    getSharedItemByUser:  item.Itemresolvers.getSharedItemByUser,
-    list : item.Itemresolvers.list
+    users : user.UserResolvers.listUser,
+    getItemByUser: item.ItemResolvers.getItemByUser,
+    getSharedItemByUser:  item.ItemResolvers.getSharedItemByUser,
+    list : item.ItemResolvers.list
 
   },
   Mutation: {
     
     //User 
-    createUser: user.Userresolvers.createUser,
-    updateUser : user.Userresolvers.updateUser,
-    deleteUser: user.Userresolvers.deleteUser,
-    loginUser: user.Userresolvers.loginUser,
-    logoutUser: user.Userresolvers.logoutUser,
+    createUser: user.UserResolvers.createUser,
+    updateUser : user.UserResolvers.updateUser,
+    deleteUser: user.UserResolvers.deleteUser,
+    loginUser: user.UserResolvers.loginUser,
+    logoutUser: user.UserResolvers.logoutUser,
     //Item
-    createItem:  item.Itemresolvers.createItem,
-    updateItem : item.Itemresolvers.updateItem,
-    completeItem: item.Itemresolvers.completeItem,
-    deleteItem : item.Itemresolvers.deleteItem,
-    shareItem: item.Itemresolvers.shareItem,
-    commentItem : item.Itemresolvers.commentItem,
+    createItem:  item.ItemResolvers.createItem,
+    updateItem : item.ItemResolvers.updateItem,
+    completeItem: item.ItemResolvers.completeItem,
+    deleteItem : item.ItemResolvers.deleteItem,
+    shareItem: item.ItemResolvers.shareItem,
+    commentItem : item.ItemResolvers.commentItem,
     
   }
 }

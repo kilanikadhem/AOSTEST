@@ -14,20 +14,14 @@ DB.insert = function insert(data, destination) {
   const db = client.db(dbName);
   const collection = db.collection(destination);
   // Insert some documents
-  collection.insert(data, function (err, result) {
-    if (err) console.log("DB insert: error", err)
-    else console.log("DB insert: succesfully", result)
-  });
+ return  collection.insertOne(data)
 };
 
 DB.delete = function (data, destination) {
   const db = client.db(dbName);
   const collection = db.collection(destination);
   // Delete some documents
-  collection.deleteOne(data, function (err, result) {
-    if (err) console.log("DB delete: error", err)
-    else console.log("DB delete: succesfully", result)
-  });
+  return collection.deleteOne(data);
 };
 
 DB.findDocuments = function (data, destination,cb) {
@@ -60,10 +54,11 @@ DB.updateDocument = async function updateDocument(id, data, destination,cb) {
   return collection.updateOne(id,data,destination);
  };
 
- DB.findOneAndUpdate = async function findOneAndUpdate(id, data, destination,cb) {
+ DB.findOneAndUpdate = async function findOneAndUpdate(id, data, destination) {
   const db = client.db(dbName);
   const collection = db.collection(destination);
-  return collection.findOneAndUpdate(id,data,destination);
+
+  return collection.findOneAndUpdate(id,data,{returnOriginal: false});
  };
 
 DB.connect = function connect(cb) {

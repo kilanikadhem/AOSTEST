@@ -13,7 +13,7 @@ const UserList = require('../data/user.json')
 var DB = require('../config/demo_create_mongo_db')
 var ObjectId = require('mongodb').ObjectId
 
-export const Userresolvers = {
+export const UserResolvers = {
 
    async listUser(){
    
@@ -31,30 +31,42 @@ export const Userresolvers = {
 
 
   createUser(_, { name, lastName, email, password }: MutationCreateUserArgs) {
-    const user = { id: uuid.v1(), name, lastName, email, password }
-    UserList.users.push(user)
-    return user
+   
+    return new Promise(async(resolve,reject)=>{
+      
+      const res = await DB.insert({'name':name,'lastName':name,'email':email,'password':password},"users");
+      console.log( "Inside INsert",res);
+      resolve(res.ops[0]);
+    });
   },
   updateUser(_, { id, name, lastName, email, password }: MutationUpdateUserArgs) {
-    const user = UserList.users.find(i => i.id === id)
-    if (user) {
-      user.name = name
-      user.lastName = lastName
-      user.email = email
-      user.password = password
-      return user
-    }
-    throw new Error('user not found');
+    return new Promise(async(resolve,reject)=>{
+      var updatedValue ={};
+       if(name){updatedValue['name'] = name}
+       if(lastName){updatedValue['lastName'] = lastName}
+       if(email){updatedValue['email'] = email}
+       if(password){updatedValue['password'] = password}
+       console.log(updatedValue)   ;
+          const res = await DB.findOneAndUpdate({"_id":ObjectId(id)},{ $set:updatedValue},"users");
+      console.log( "Inside Updated",res.value,updatedValue);
+      resolve(res.value);
+    });
   },
+
   deleteUser(_, { id }: MutationDeleteUserArgs) {
 
-    const idx = UserList.users.findIndex(i => i.id === id)
+   /* const idx = UserList.users.findIndex(i => i.id === id)
 
     if ((idx !== -1)) {
       UserList.users.splice(idx, 1)
       return `User ${id} deleted with success`
     }
-    throw new Error('Id not found');
+    throw new Error('Id not found');*/
+    return new Promise(async(resolve,reject)=>{
+          const res = await DB.delete({"_id":ObjectId(id)},"users");
+      console.log( "Inside Updated",res);
+      resolve(res.deletedCount);
+    });
   },
 
    async loginUser(_, { login, password }: MutationLoginArgs) {
@@ -67,10 +79,9 @@ export const Userresolvers = {
   },
 
     async logoutUser(_, { userId }: MutationLogoutArgs) {
-
     return new Promise(async(resolve,reject)=>{
       console.log(userId);
-      const res = await DB.findOneAndUpdate({"_id":userId }, { $set: { "status": " Not Connected" } }, 'users');
+      const res = await DB.findOneAndUpdate({"_id":ObjectId(userId) }, { $set: { "status": " Not Connected" }} ,'users');
        console.log(res.value);
       resolve(res.value);
     });
