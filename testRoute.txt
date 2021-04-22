@@ -1,24 +1,32 @@
-Liste des Users : query {users{id,email,status}} 
+Liste des Users : query {users{_id,email,status}} 
 
-login : mutation {loginUser(login:"kadhem@gmail.com",password:"123456789")} 
+login : mutation mutation{loginUser(login:"kadhem@gmail.com",password:"123456789"){email,name,status}} 
         - return true  pour valider login et mdp 
-Liste des Users : query {users{id,email,status}} 
+         {
+  "data": {
+    "loginUser": {
+      "email": "kadhem@gmail.com",
+      "name": "kadhem",
+      "status": "Connected"
+    }
+  }
+}
+Liste des Users : query {users{_id,email,status}} 
         - {
   "data": {
     "users": [
       {
-        "id": "0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",
-        "email": "kadhem@gmail.com",
+        "_id": "607fe31edb3722c84ce8a8cc",
+        "email": "kadhem.email@gmail.kahdem",
         "status": "Connected"
-      }
-    ]
-  }
-}
+      },
+      ....,
+
  - le status de users connecté est true . 
  -avoir la liste des taches  des taches pour ce user : 
-    query{getItemByUser(userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3"){title,description,status}}
+    query{getItemByUser(userId:"607fe31edb3722c84ce8a8cc"){title,description,status}}
  - commente la tache : 
-    mutation {commentItem(id:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",status:"description updated",userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3"){title,description}}
+     mutation {commentItem(id:"607ff15096b0e1ba501895e7",description:"description updated",userId:"607fe31edb3722c84ce8a8cc"){title,description}}
      -return not connected : dans le cas si l user n'est as connecté . 
      "errors": [
     {
@@ -26,33 +34,36 @@ Liste des Users : query {users{id,email,status}}
       ... 
 
      - return l'item mis a jour: 
-     {
+    {
   "data": {
     "commentItem": {
-      "title": "Item 1",
+      "title": "Item 2",
       "description": "description updated"
-                   }
-           }
-      }
+    }
+  }
+}
+
+-end tache : 
+mutation {completeItem(id:"608124e19188ca69b8d56ad4",status:"completed",userId:"607fe31edb3722c84ce8a8cc"){status}}
 
 -avoir la liste des taches par user : 
-query {getItemByUser(userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3"){title,description}}
+query {getItemByUser(userId:"607fe31edb3722c84ce8a8cc"){title,description}}
 
 -creer une tache : 
-mutation {createItem(title:"item created",description:"item description",status:"not completed",userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3"){id,title}}
+mutation {createItem(title:"item created",description:"item description",status:"not completed",userId:"607fe31edb3722c84ce8a8cc"){_id,title}}
 
 -update une tache : 
-mutation {updateItem(id:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",title:"title updated",userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3"){id,title}}
+mutation {updateItem(id:"608124c89188ca69b8d56ad3",title:"title updated",userId:"607fe31edb3722c84ce8a8cc"){_id,title}}
   -dans le cas de no connected user  return:
   "errors": [
     {
       "message": "Not Connected",
     ... ]
    - dans le cas validated : 
-   {
+{
   "data": {
     "updateItem": {
-      "id": "0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",
+      "_id": "608124c89188ca69b8d56ad3",
       "title": "title updated"
     }
   }
@@ -61,10 +72,7 @@ mutation {updateItem(id:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",title:"title upda
 -delete tache  : 
 mutation {deleteItem(id:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3")}
     - dans le cas  ou l id de la tache est faux : 
-    "errors": [
-    {
-      "message": "Id not found", 
-      ... ] 
+    "errors":return 0 
     - dans  le cas d'user no connected : 
      "errors": [
     {
@@ -72,15 +80,27 @@ mutation {deleteItem(id:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",userId:"0d6cd1eb-
     ... ]
     - dans le cas  validated : 
     {
-                 "data": {
-                  "deleteItem": "Item 0d6cd1eb-1e6e-4756-8a04-ad7b643134e3 deleted with success"
-                 }
-    } 
+  "data": {
+    "deleteItem": "1"
+  }
+}
 
 -complete la tache  : 
-mutation {completeItem(id:"ba33d5af-1d62-4147-99d3-269896a83bb9",status:"complétée",userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3"){title,status}}  
+mutation {completeItem(id:"607ff15096b0e1ba501895e7",status:"complétée",userId:"607fe31edb3722c84ce8a8cb"){title,status}}  
+   cas  error : 
+   {
+  "errors": [
+    {
+      "message": "Id not found or error in User Status",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+
    return dans le cas validated  : 
    {
+ 
   "data": {
     "completeItem": {
       "title": "Item 2",
@@ -88,9 +108,8 @@ mutation {completeItem(id:"ba33d5af-1d62-4147-99d3-269896a83bb9",status:"complé
     }
   }
 }
-
  - share Task : 
- mutation {shareItem(id:"ba33d5af-1d62-4147-99d3-269896a83bb9",userToShare:"abccdf63-e946-4e12-b201-8775e2dfc800",userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3"){title,sharedUsers}}  
+ mutation {shareItem(id:"607ff15096b0e1ba501895e7",userToShare:"60809c2e2ee07ea6581bcafa",userId:"607fe31edb3722c84ce8a8cc"){title,sharedUsers}}  
   
   -dans le cas de  Item not found  or no connected User : 
   "errors": [
@@ -98,50 +117,48 @@ mutation {completeItem(id:"ba33d5af-1d62-4147-99d3-269896a83bb9",status:"complé
       "message": "Item not found Or No Connected User",
       ... ]
   - dans le cas validated : 
-  {
+{
   "data": {
     "shareItem": {
       "title": "Item 2",
       "sharedUsers": [
-        "abccdf63-e946-4e12-b201-8775e2dfc800"
+        "607ff15096b0e1ba501895e7",
+        "60809c2e2ee07ea6581bcafa"
       ]
     }
   }
 } 
+ 
+ 
 
   le taleau sharedUsers  est le tableau ou on sauvgarde les users qu'on partage avec eux la tache : on peut chaque case la rendre un objet json avec les droits d'access  pour le donner
   la possibilté de modifier / supprimer  ou non . 
 
  - Avoir la liste des Taches shared avec  le user  passer das Args  : 
- query{getSharedItemByUser(userId:"abccdf63-e946-4e12-b201-8775e2dfc800"){title}}
+  query{getSharedItemByUser(userId:"60809c2e2ee07ea6581bcafa"){title}}
  {
   "data": {
     "getSharedItemByUser": [
-      {
-        "title": "Item 1"
-      },
       {
         "title": "Item 2"
       }
     ]
   }
 }
-
--Logout User : mutation {logoutUser(userId:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3")}
+-Logout User : mutation {logoutUser(userId:"607ff10896b0e1ba501895e4"){status}}
 
 ------------------------------------------------------------------------------------------------
 Gestion des users  : 
 - create User  : 
-mutation {createUser(name:"raed",lastName:"abada",email:"abada.raed@gmail.com",password:"147852369"){name}} 
+mutation {createUser(name:"raed",lastName:"abada",email:"abada.raed@gmail.com",password:"147852369"){name}}  
 
 - update User  : 
-mutation {updateUser(id:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3",name:"kadhemm",lastName:"kilani",email:"kadhem@gmail.com",password:"12345679"){name}}
+mutation {updateUser(id:"60809c2e2ee07ea6581bcafa",name:"kadhemm",lastName:"kilani",email:"kadhem@gmail.com",password:"12345679"){name}}
 
 - delete User : 
-mutation {deleteUser(id:"0d6cd1eb-1e6e-4756-8a04-ad7b643134e3")}
-
+mutation {deleteUser(id:"60809c2e2ee07ea6581bcafa")}
 {
   "data": {
-    "deleteUser": "User 0d6cd1eb-1e6e-4756-8a04-ad7b643134e3 deleted with success"
+    "deleteUser": "1"
   }
 }

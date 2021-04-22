@@ -6,7 +6,7 @@ type List  {
   }
 
   type Item {
-    id: String!
+    _id: String!
     title: String!
     description: String!
     status : String!

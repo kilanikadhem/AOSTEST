@@ -32,7 +32,7 @@ export const ItemResolvers = {
   createItem(_, { title, description, status, userId }: MutationCreateItemArgs) {
     return new Promise(async (resolve, reject) => {
       const res = await DB.insert({ 'title': title, 'description': description, 'status': status, 'userId': userId }, "items");
-      console.log("Inside INsert", res);
+      console.log("Inside INsert", res.ops[0]);
       resolve(res.ops[0]);
     });
   },
@@ -85,7 +85,9 @@ export const ItemResolvers = {
       var sharedItems = [];
       
       const res = await DB.findAll("items");
+      
       res.forEach(function (item) {
+        if(item.sharedUsers != undefined)
         item.sharedUsers.forEach(function (i) {
           if (i == userId) {
             sharedItems.push(item);
