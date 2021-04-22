@@ -32,7 +32,7 @@ type List  {
   }
   type Mutation {
     createItem(title: String, description: String, status: String, userId: String): Item
-    updateItem(id: String!, title: String, description: String, userId: String): Item
+    updateItem(id: String!, title: String, description: String, status: String,userId: String): Item
     deleteItem(id: String!,userId: String!): String 
     createUser(name: String, lastName: String, email: String,password: String):User
     updateUser(id: String!, name: String, lastName: String, email: String, password: String): User

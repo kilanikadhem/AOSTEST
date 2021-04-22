@@ -55,16 +55,9 @@ export const UserResolvers = {
 
   deleteUser(_, { id }: MutationDeleteUserArgs) {
 
-   /* const idx = UserList.users.findIndex(i => i.id === id)
-
-    if ((idx !== -1)) {
-      UserList.users.splice(idx, 1)
-      return `User ${id} deleted with success`
-    }
-    throw new Error('Id not found');*/
     return new Promise(async(resolve,reject)=>{
           const res = await DB.delete({"_id":ObjectId(id)},"users");
-      console.log( "Inside Updated",res);
+      console.log( "Inside delete",res);
       resolve(res.deletedCount);
     });
   },
@@ -91,10 +84,11 @@ export const UserResolvers = {
   isConnected(userId) {
    
     return new Promise(async(resolve,reject)=>{
-      console.log(userId);
+      console.log("UserID in Is Connected",userId);
       const res = await DB.findDocument({'_id':ObjectId(userId),'status':"Connected"}, 'users');
        console.log("isConnected",res);
       resolve(res);
+      reject({"userId":null})
   });
   }
 };

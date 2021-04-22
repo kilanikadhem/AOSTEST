@@ -1,116 +1,137 @@
 
 import {
-    MutationCreateItemArgs,
-    MutationUpdateItemArgs,
-    MutationDeleteItemArgs,
-    MutationCompleteItemArgs,
-    QueryGetItemByUser,
-    MutationShareItem,
-    MutationCommentItem
+  MutationCreateItemArgs,
+  MutationUpdateItemArgs,
+  MutationDeleteItemArgs,
+  MutationCompleteItemArgs,
+  QueryGetItemByUser,
+  MutationShareItem,
+  MutationCommentItem
 
-  } from '../graphql-types'
-  import * as uuid from 'uuid'
-  
-  const todoList = require('../data/list.json')
-  const user = require('./UserResolver');
-  var DB = require('../config/demo_create_mongo_db')
-  export const Itemresolvers = {
-      // mongo 
-      list: () => todoList.items,
-   
-      // Mongo
-      createItem(_, {title, description, status,userId}: MutationCreateItemArgs) {
-        const item = {id: uuid.v1(), title, description, status, userId}
-        var connected = user.Userresolvers.isConnected(userId);
-        if(connected)
-        todoList.items.push(item)
-        return item
-     },
+} from '../graphql-types'
+import * as uuid from 'uuid'
 
-     // Mongo
-      updateItem(_, {id, title = undefined, description, status =undefined, userId}: MutationUpdateItemArgs) {
-        const item = todoList.items.find(i => i.id === id)
-        var connected = user.Userresolvers.isConnected(userId);
-        if(connected && (item.userId ==  userId)){
-        if(item) {
-         (title != undefined)? item.title = title :null;
-          item.description = description;
-          (item.status != undefined)? item.status = status :null;
-          return item
-        }
-        throw new Error('Item not found');}
-        throw new Error('Not Connected');
-        
-        
+const todoList = require('../data/list.json')
+const user = require('./UserResolver');
+var DB = require('../config/demo_create_mongo_db')
+var ObjectId = require('mongodb').ObjectId
 
-        
-      },
-      deleteItem(_, {id,userId}: MutationDeleteItemArgs) {
+export const ItemResolvers = {
 
-        const idx = todoList.items.findIndex(i => i.id === id)
-       //return idx;
-        var connected = user.Userresolvers.isConnected(userId);
-        if((idx !== -1)&&(todoList.items[idx].userId == userId) &&(connected) ) {
-          todoList.items.splice(idx, 1)
-          return `Item ${id} deleted with success`
-        }
-        throw new Error('Id not found');
-      },
+  list: () => {
+    return new Promise(async (resolve, reject) => {
 
-      getItemByUser(_,{userId}:QueryGetItemByUser) {
-        return new Promise(async(resolve,reject)=>{
-           let isConnected=  user.Userresolvers.isConnected(userId);
-           if(isConnected){
-            const res = await DB.findDocuments({"userId":userId},"items");
-            console.log(res);
-            resolve(res);
-           }
-           });
-      },
-      getSharedItemByUser(_,{userId}:QueryGetItemByUser) {
-        var sharedItems = [];
-        todoList.items.forEach(function (item) {
-          item.sharedUsers.forEach(function (i) {
-               if(i==userId){
-                 sharedItems.push(item);
-               }
-          });
-      });
-      return sharedItems;
-      
-      },
-       // changer l'etat de status
-      completeItem(_,{id,status,userId}:MutationCompleteItemArgs) {
-        const item = todoList.items.find(i => i.id === id)
-        var connected = user.Userresolvers.isConnected(userId);
-        if(item && connected) {
-          item.status = status
-          return item
-        }
-        throw new Error('Item not found');
-      }, 
-      shareItem(_,{id,userToShare,userId}:MutationShareItem) {
-        const item = todoList.items.find(i => i.id == id)
-        var connected = user.Userresolvers.isConnected(userId);
-        if(item && (item.userId == userId) && connected) {
-          item.sharedUsers.push(userToShare);
-          return item
-        }
-        throw new Error('Item not found Or No Connected User');
-      } , 
+      const res = await DB.findAll("items");
+      console.log(res);
+      resolve(res);
+    });
 
-      commentItem(_,{id,description,userId}:MutationCommentItem) {
-     /*   const item = todoList.items.find(i => i.id == id)
-        var connected = user.Userresolvers.isConnected(userId);
-        if(item && (item.userId == userId) && connected) {
-            item.description = description           
-            return item       
+  },
+
+  // Mongo
+  createItem(_, { title, description, status, userId }: MutationCreateItemArgs) {
+    return new Promise(async (resolve, reject) => {
+      const res = await DB.insert({ 'title': title, 'description': description, 'status': status, 'userId': userId }, "items");
+      console.log("Inside INsert", res);
+      resolve(res.ops[0]);
+    });
+  },
+
+  updateItem(_, { id, title = undefined, description, status = undefined, userId }: MutationUpdateItemArgs) {
+    return new Promise(async (resolve, reject) => {
+      var updatedValue = {};
+      if (title) { updatedValue['title'] = title }
+      if (description) { updatedValue['description'] = description }
+      if (status) { updatedValue['status'] = status }
+      if (userId) { updatedValue['userId'] = userId }
+      let isConnected = await user.UserResolvers.isConnected(userId);
+      if (isConnected !== null) {
+        const res = await DB.findOneAndUpdate({ "_id": ObjectId(id), "userId": userId }, { $set: updatedValue }, "items");
+        resolve(res.value);
       }
-      throw new Error('Item not found');*/
-      var obj= {id:id,title:undefined,description:description, status:undefined,userId:userId}
-      return Itemresolvers.updateItem(null,obj);
+      resolve(new Error('Id not found or error in User Status'));
+    });
+
+
+
+  },
+
+  deleteItem(_, { id, userId }: MutationDeleteItemArgs) {
+    return new Promise(async (resolve, reject) => {
+      let isConnected = await user.UserResolvers.isConnected(userId);
+      if (isConnected !== null) {
+        const res = await DB.delete({ "_id": ObjectId(id), "userId": userId }, "items");
+        console.log("Inside delete", res);
+        resolve(res.deletedCount);
+      }else {
+      throw new Error('Id not found');}
+    });
+
+  },
+
+  getItemByUser(_, { userId }: QueryGetItemByUser) {
+    return new Promise(async (resolve, reject) => {
+      let isConnected = user.UserResolvers.isConnected(userId);
+      if (isConnected) {
+        const res = await DB.findDocuments({ "userId": userId }, "items");
+        console.log(res);
+        resolve(res);
+      }
+    });
+  },
+
+  getSharedItemByUser(_, { userId }: QueryGetItemByUser) {
+    return new Promise(async (resolve, reject) => {
+      var sharedItems = [];
+      
+      const res = await DB.findAll("items");
+      res.forEach(function (item) {
+        item.sharedUsers.forEach(function (i) {
+          if (i == userId) {
+            sharedItems.push(item);
+          }
+        });
+      });
+      resolve(sharedItems);
+    });
+    
+  },
+  // changer l'etat de status 
+  completeItem(_, { id, status, userId }: MutationCompleteItemArgs) {
+  
+    return new Promise(async (resolve, reject) => {
+    
+    resolve(ItemResolvers.updateItem(null, {"id":id,"status":status,"userId":userId}));
      
-    }
-   
-  };
+    });
+
+
+  },
  
+  shareItem(_, { id, userToShare, userId }: MutationShareItem) {
+
+    return new Promise(async (resolve, reject) => {
+     
+      let isConnected = await user.UserResolvers.isConnected(userId);
+      if (isConnected !== null) {
+        const res = await DB.findDocument({ "_id": ObjectId(id), "userId": userId },"items");
+        console.log("res",res);
+         res.sharedUsers.push(userToShare);
+        const res1 = await DB.findOneAndUpdate({ "_id": ObjectId(id), "userId": userId }, { $set: {"sharedUsers":  res.sharedUsers}}, "items");
+        resolve(res1.value);
+      }
+      resolve(new Error('Id not found or error in User Status'));
+    });
+
+  },
+
+  commentItem(_, { id, description, userId }: MutationCommentItem) {
+    return new Promise(async (resolve, reject) => {
+    
+      resolve(ItemResolvers.updateItem(null, {"id":id,"description":description,"userId":userId}));
+       
+      });
+
+  }
+
+};

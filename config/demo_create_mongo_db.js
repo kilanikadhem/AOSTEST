@@ -61,6 +61,15 @@ DB.updateDocument = async function updateDocument(id, data, destination,cb) {
   return collection.findOneAndUpdate(id,data,{returnOriginal: false});
  };
 
+DB.findAndModify = function (query,sort,update,destination) {
+  const db = client.db(dbName);
+  const collection = db.collection(destination);
+
+  return collection.findAndModify({"query":query,
+  "sort": sort,
+  "update": update},{returnOriginal: false});
+}
+
 DB.connect = function connect(cb) {
   DB.client = client.connect(function (err) {
     if (err) console.log("DB:", err)
