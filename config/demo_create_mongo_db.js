@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 
 // Connection URL
-const url = 'mongodb://localhost:27017';//mongodb://username:password@url:port/db_name?params
+const url = 'mongodb+srv://kadhem:MK3G27LRPRe6mK4@cluster0.pkvyo.mongodb.net/AOSTEST?retryWrites=true&w=majority';//mongodb://username:password@url:port/db_name?params
 
 // Database Name
 const dbName = 'AOSTEST';

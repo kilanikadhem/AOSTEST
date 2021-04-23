@@ -12,7 +12,7 @@ import {
 import * as uuid from 'uuid'
 
 const todoList = require('../data/list.json')
-const user = require('./UserResolver');
+const user = require('./userResolver');
 var DB = require('../config/demo_create_mongo_db')
 var ObjectId = require('mongodb').ObjectId
 

@@ -41,6 +41,8 @@ cli : npm install typescript graphql @graphql-codegen/cli uuid
 ## Structure  de l'application : 
 config: 
   - fichier demo_create_mongo_db : contient la connexion avec la DB et les function d'interaction entre les controllers et la DB .
+  Pour La BD on a utilise mlab.
+  https://mlab.com/
 Data : 
   -dossier qui contient les listes des valeurs des Models  User, Taches, List (des tableaux des objets Json).
 Resolvers: 
@@ -74,6 +76,13 @@ les fonctions utilisées dans le projets( tous les types qui se termient par Arg
 schema.graphql : est le schema graphql acvec les mutations & queries dans notre projets  .
 
 server.ts : fichoer main du projet. 
+
+
+Pour consulter la base qu'est deployé sur mlab  : 
+
+url = 'mongodb+srv://kadhem:MK3G27LRPRe6mK4@cluster0.pkvyo.mongodb.net/AOSTEST?retryWrites=true&w=majority';
+user = kadhem
+password =MK3G27LRPRe6mK4
 
 
 
